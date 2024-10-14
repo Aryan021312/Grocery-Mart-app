@@ -48,7 +48,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     //the dependency of xml auto adjusts dimensions
-
+    implementation ("androidx.constraintlayout:constraintlayout:2.0.4")
     //text dimension
     implementation("com.intuit.sdp:sdp-android:1.1.0")
     implementation("com.intuit.ssp:ssp-android:1.1.0")
