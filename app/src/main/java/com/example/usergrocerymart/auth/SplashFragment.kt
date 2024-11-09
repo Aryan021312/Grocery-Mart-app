@@ -1,4 +1,4 @@
-package com.example.usergrocerymart
+package com.example.usergrocerymart.auth
 
 import android.content.Intent
 import android.os.Build
@@ -11,9 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.usergrocerymart.R
 import com.example.usergrocerymart.activity.UserMainActivity
 import com.example.usergrocerymart.databinding.FragmentSplashBinding
 import com.example.usergrocerymart.viewmodels.authviewmodel
@@ -49,7 +49,7 @@ class SplashFragment : Fragment() {
     }
 private fun setstatusbarcolor(){
     activity?.window?.apply{
-        val statusbarcolor=ContextCompat.getColor(requireContext(),R.color.darkgreen)
+        val statusbarcolor=ContextCompat.getColor(requireContext(), R.color.darkgreen)
         statusBarColor=statusbarcolor
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
             decorView.systemUiVisibility=View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR

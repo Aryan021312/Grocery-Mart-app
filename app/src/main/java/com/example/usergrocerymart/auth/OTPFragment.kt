@@ -1,4 +1,4 @@
-package com.example.usergrocerymart
+package com.example.usergrocerymart.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,8 +11,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.usergrocerymart.R
 import com.example.usergrocerymart.activity.UserMainActivity
 import com.example.usergrocerymart.databinding.FragmentOTPBinding
+import com.example.usergrocerymart.mesg
 import com.example.usergrocerymart.models.Users
 import com.example.usergrocerymart.viewmodels.authviewmodel
 import kotlinx.coroutines.launch
@@ -88,8 +90,8 @@ class OTPFragment : Fragment() {
 lifecycleScope.launch{
     otpsent.collect{
         if(it){
-    mesg.hidedialog()
-    mesg.showtoast(requireContext(),"OTP Sent...")
+            mesg.hidedialog()
+            mesg.showtoast(requireContext(), "OTP Sent...")
             kotlinx.coroutines.delay(2000)}
 
     }
@@ -102,11 +104,11 @@ lifecycleScope.launch{
     private fun loginbtnclicked(){
 
         binding.otploginbtn.setOnClickListener{
-            mesg.showdialog(requireContext(),"All Set...")
+            mesg.showdialog(requireContext(), "All Set...")
             val edittext= arrayOf(binding.optno1,binding.optno2,binding.optno3,binding.optno4,binding.optno5,binding.optno6)
             val otp=edittext.joinToString (""){it.text.toString() }
             if(otp.length<edittext.size){
-                mesg.showtoast(requireContext(),"Invalid OTP")
+                mesg.showtoast(requireContext(), "Invalid OTP")
             }
             else{
                 edittext.forEach { it.text?.clear();it.clearFocus() }
@@ -123,7 +125,7 @@ val user=Users(uid = mesg.getcurrentuserid(), userPhoneNumber = userNumber, user
             viewModel.signindone.collect{
                 if(it){
                     mesg.hidedialog()
-                    mesg.showtoast(requireContext(),"Welcome")
+                    mesg.showtoast(requireContext(), "Welcome")
                     startActivity(Intent(requireActivity(),UserMainActivity::class.java))
                     requireActivity().finish()
                 }
