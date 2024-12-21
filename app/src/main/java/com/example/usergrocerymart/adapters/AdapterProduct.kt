@@ -14,7 +14,10 @@ import com.example.usergrocerymart.databinding.ItemViewprodBinding
 import com.example.usergrocerymart.models.Product
 
 class AdapterProduct(
-   ) : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>(),Filterable{
+    val onaddbtnclick: (Product, ItemViewprodBinding) -> Unit,
+    val onincrementbtnclick : (Product, ItemViewprodBinding) -> Unit,
+    val ondecreamentbtnclick : (Product, ItemViewprodBinding) -> Unit
+) : RecyclerView.Adapter<AdapterProduct.ProductViewHolder>(),Filterable{
     class ProductViewHolder (val binding: ItemViewprodBinding) : ViewHolder(binding.root) {
 
     }
@@ -53,6 +56,18 @@ class AdapterProduct(
             val quantityprod = product.Prodqty.toString() + product.Produnit
             tvprodqty.text = quantityprod
             tvprodprice.text = "Rs"+product.Prodprice
+            tvedit.setOnClickListener{
+                onaddbtnclick(product,this)
+
+            }
+            incrementcnt.setOnClickListener{
+                onincrementbtnclick(product,this)
+            }
+            decrementcnt.setOnClickListener{
+                ondecreamentbtnclick(product,this)
+            }
+
+
         }
 
 
