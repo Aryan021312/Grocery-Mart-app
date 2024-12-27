@@ -16,7 +16,9 @@ import com.example.usergrocerymart.R
 import com.example.usergrocerymart.adapters.AdapterProduct
 import com.example.usergrocerymart.databinding.FragmentSearchBinding
 import com.example.usergrocerymart.databinding.ItemViewprodBinding
+import com.example.usergrocerymart.mesg
 import com.example.usergrocerymart.models.Product
+import com.example.usergrocerymart.roomdb.CartProducts
 import com.example.usergrocerymart.viewmodels.UserViewModel
 import kotlinx.coroutines.launch
 import java.lang.ClassCastException
@@ -80,29 +82,48 @@ private lateinit var adapterProduct: AdapterProduct
             }
         }
     }
-    fun onincrementbtnclick(product: Product,productBinding: ItemViewprodBinding){
+    private  fun onincrementbtnclick(product: Product,productBinding: ItemViewprodBinding){
 
         var itemcntinc = productBinding.prodcnt.text.toString().toInt()
         itemcntinc++
-        productBinding.prodcnt.text = itemcntinc.toString()
-        cartListener?.showcartlayout(1)
-        cartListener?.savingCartItem(1)
+        if(product.Prodstock!! + 1 > itemcntinc) {
+            productBinding.prodcnt.text = itemcntinc.toString()
+            cartListener?.showcartlayout(1)
+            product.itemcount = itemcntinc
+            lifecycleScope.launch {
+                cartListener?.savingCartItem(1)
+                saveprodinroomdb(product)
+                viewModel.updateitemcnt(product, itemcntinc)
+            }
+        }
+        else{
+            mesg.showtoast(requireContext(),"Out Of Stock")
+        }
     }
-    fun ondecreamentbtnclick(product: Product,productBinding: ItemViewprodBinding){
+    private fun ondecreamentbtnclick(product: Product,productBinding: ItemViewprodBinding){
 
         var itemcntdec = productBinding.prodcnt.text.toString().toInt()
         itemcntdec--
+        product.itemcount = itemcntdec
+        lifecycleScope.launch {
+            cartListener?.savingCartItem(-1)
+            saveprodinroomdb(product)
+            viewModel.updateitemcnt(product,itemcntdec)
+        }
         if(itemcntdec > 0){
             productBinding.prodcnt.text = itemcntdec.toString()
         }
         else{
+            lifecycleScope.launch {
+                viewModel.deletecartprod(product.prod_id!!)
+            }
             productBinding.tvedit.visibility = View.VISIBLE
             productBinding.llprodcnt.visibility = View.GONE
             productBinding.prodcnt.text = "0"
 
         }
         cartListener?.showcartlayout(-1)
-        cartListener?.savingCartItem(-1)
+
     }
     private fun onaddbtnclick(product: Product,productBinding: ItemViewprodBinding){
         productBinding.tvedit.visibility = View.GONE
@@ -111,7 +132,33 @@ private lateinit var adapterProduct: AdapterProduct
         itemcnt++
         productBinding.prodcnt.text = itemcnt.toString()
         cartListener?.showcartlayout(1)
-        cartListener?.savingCartItem(1)
+        product.itemcount = itemcnt
+        lifecycleScope.launch {
+            cartListener?.savingCartItem(1)
+            saveprodinroomdb(product)
+            viewModel.updateitemcnt(product,itemcnt)
+        }
+
+    }
+    private fun saveprodinroomdb(product: Product) {
+
+        val cartproduct = CartProducts(
+            Prod_id = product.prod_id!!,
+            Prodtitle = product.Prodtitle,
+            Prodcat = product.Prodcat,
+            Prodcount = product.itemcount,
+            Prod_img = product.Prodimageuris?.get(0)!! ,
+            Prodqty = product.Prodqty.toString() + product.Produnit.toString(),
+            Prodstock = product.Prodstock,
+            Prodprice = "Rs"+"${product.Prodprice}",
+            admin_uid  = product.admin_uid,
+
+            )
+        lifecycleScope.launch {
+            viewModel.insertcartprod(cartproduct)
+
+        }
+
     }
     override fun onAttach(context: Context) {
         super.onAttach(context)

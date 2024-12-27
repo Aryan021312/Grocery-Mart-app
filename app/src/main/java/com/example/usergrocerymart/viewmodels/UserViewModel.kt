@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.usergrocerymart.models.Product
@@ -33,6 +34,11 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
     suspend  fun deletecartprod(productId : String){
         dao.deletecartprod(productId)
     }
+
+    fun getall() : LiveData<List<CartProducts>>{
+    return dao.getallcartprod()
+    }
+
     //Firebase Call
     fun fetchallprod(): Flow<List<Product>> = callbackFlow {
         val db =  FirebaseDatabase.getInstance().getReference("Admin").child("All Products")
@@ -80,6 +86,15 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
         awaitClose{
             db.removeEventListener(eventListener)
         }
+
+    }
+    fun updateitemcnt(product: Product,itemCount: Int){
+
+        FirebaseDatabase.getInstance().getReference("Admin").child("All Products/${product.prod_id}").child("itemcount").setValue(itemCount)
+                FirebaseDatabase.getInstance().getReference("Admin").child("ProductCategory/${product.Prodcat}/${product.prod_id}").child("itemcount").setValue(itemCount)
+
+                        FirebaseDatabase.getInstance().getReference("Admin").child("ProductType/${product.Prodtype}/${product.prod_id}").child("itemcount").setValue(itemCount)
+
 
     }
     //Shared Preferences

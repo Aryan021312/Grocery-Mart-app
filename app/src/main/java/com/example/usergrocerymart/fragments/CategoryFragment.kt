@@ -16,6 +16,7 @@ import com.example.usergrocerymart.R
 import com.example.usergrocerymart.adapters.AdapterProduct
 import com.example.usergrocerymart.databinding.FragmentCategoryBinding
 import com.example.usergrocerymart.databinding.ItemViewprodBinding
+import com.example.usergrocerymart.mesg
 import com.example.usergrocerymart.models.Product
 import com.example.usergrocerymart.roomdb.CartProducts
 import com.example.usergrocerymart.viewmodels.UserViewModel
@@ -110,12 +111,18 @@ val bundle = arguments
 
         var itemcntinc = productBinding.prodcnt.text.toString().toInt()
         itemcntinc++
-        productBinding.prodcnt.text = itemcntinc.toString()
-        cartListener?.showcartlayout(1)
-      product.itemcount = itemcntinc
-      lifecycleScope.launch {
-          cartListener?.savingCartItem(1)
-          saveprodinroomdb(product)
+      if(product.Prodstock!! + 1 > itemcntinc) {
+          productBinding.prodcnt.text = itemcntinc.toString()
+          cartListener?.showcartlayout(1)
+          product.itemcount = itemcntinc
+          lifecycleScope.launch {
+              cartListener?.savingCartItem(1)
+              saveprodinroomdb(product)
+              viewModel.updateitemcnt(product, itemcntinc)
+          }
+      }
+      else{
+          mesg.showtoast(requireContext(),"Out Of Stock")
       }
     }
    private fun ondecreamentbtnclick(product: Product,productBinding: ItemViewprodBinding){
@@ -126,6 +133,7 @@ val bundle = arguments
        lifecycleScope.launch {
            cartListener?.savingCartItem(-1)
            saveprodinroomdb(product)
+           viewModel.updateitemcnt(product,itemcntdec)
        }
         if(itemcntdec > 0){
         productBinding.prodcnt.text = itemcntdec.toString()
@@ -153,6 +161,7 @@ val bundle = arguments
         lifecycleScope.launch {
             cartListener?.savingCartItem(1)
             saveprodinroomdb(product)
+            viewModel.updateitemcnt(product,itemcnt)
         }
 
     }
@@ -161,13 +170,13 @@ val bundle = arguments
 
         val cartproduct = CartProducts(
             Prod_id = product.prod_id!!,
-             Prodtitle = product.Prodtitle,
+            Prodtitle = product.Prodtitle,
          Prodcat = product.Prodcat,
          Prodcount = product.itemcount,
          Prod_img = product.Prodimageuris?.get(0)!! ,
          Prodqty = product.Prodqty.toString() + product.Produnit.toString(),
          Prodstock = product.Prodstock,
-         Prodprice = "Rs${product.Prodprice}",
+         Prodprice = "Rs"+"${product.Prodprice}",
          admin_uid  = product.admin_uid,
 
         )

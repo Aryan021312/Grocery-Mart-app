@@ -2,22 +2,25 @@ package com.example.usergrocerymart.fragments
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.usergrocerymart.Constants
 import com.example.usergrocerymart.R
 import com.example.usergrocerymart.adapters.Adaptercat
 import com.example.usergrocerymart.databinding.FragmentHomeBinding
 import com.example.usergrocerymart.models.Category
+import com.example.usergrocerymart.viewmodels.UserViewModel
 
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-
+    private val viewModel : UserViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,6 +28,7 @@ class HomeFragment : Fragment() {
         binding=FragmentHomeBinding.inflate(layoutInflater)
         setstatusbarcolor()
         navtosearch()
+        get()
         setallcategory()
         return binding.root
     }
@@ -51,7 +55,15 @@ class HomeFragment : Fragment() {
         bundle.putString("category", category.title)
         findNavController().navigate(R.id.action_HomeFragment_to_categoryFragment, bundle)
     }
+private fun get(){
+    viewModel.getall().observe(viewLifecycleOwner){
+        for(i in it){
+            Log.d("vvv" , i.Prodtitle.toString())
+            Log.d("vvv" , i.Prodcount.toString())
 
+        }
+    }
+}
 
 
     private fun setstatusbarcolor(){

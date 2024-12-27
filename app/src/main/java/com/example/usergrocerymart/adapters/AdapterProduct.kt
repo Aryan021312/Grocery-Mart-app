@@ -1,6 +1,7 @@
 package com.example.usergrocerymart.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
@@ -56,6 +57,11 @@ class AdapterProduct(
             val quantityprod = product.Prodqty.toString() + product.Produnit
             tvprodqty.text = quantityprod
             tvprodprice.text = "Rs"+product.Prodprice
+            if(product.itemcount!!> 0 ){
+                prodcnt.text = product.itemcount.toString()
+                tvedit.visibility = View.GONE
+                llprodcnt.visibility = View.VISIBLE
+            }
             tvedit.setOnClickListener{
                 onaddbtnclick(product,this)
 
