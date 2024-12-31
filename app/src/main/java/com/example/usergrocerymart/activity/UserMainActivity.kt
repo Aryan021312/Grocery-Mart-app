@@ -1,5 +1,6 @@
 package com.example.usergrocerymart.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -31,8 +32,15 @@ class UserMainActivity : AppCompatActivity() , CartListener{
         getallcartprod()
 gettotalitemcntincart()
         oncartclicked()
+       onnextbtnclick()
 
+    }
 
+    private fun onnextbtnclick() {
+        binding.btnnext.setOnClickListener{
+            startActivity(Intent(this,OrderPlaceActivity::class.java))
+
+        }
     }
 
     private fun getallcartprod(){
@@ -50,6 +58,10 @@ val bsCartprodBinding = BsCartprodBinding.inflate(LayoutInflater.from(this))
     val bs = BottomSheetDialog(this)
     bs.setContentView(bsCartprodBinding.root)
     bsCartprodBinding.tvnoofprodcnt.text = binding.tvnoofprodcnt.text
+    bsCartprodBinding.btnnext.setOnClickListener{
+        startActivity(Intent(this,OrderPlaceActivity::class.java))
+
+    }
     adapterCartproducts = AdapterCartproducts()
     bsCartprodBinding.rvproditemsbs.adapter = adapterCartproducts
     adapterCartproducts.differ.submitList(cartProductsList)
