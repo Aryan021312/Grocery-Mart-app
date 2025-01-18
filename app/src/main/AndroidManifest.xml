@@ -13,6 +13,9 @@
         android:theme="@style/Theme.UserGroceryMart"
         tools:targetApi="31">
         <activity
+            android:name=".activity.OrderPlaceActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.UserMainActivity"
             android:exported="false" />
         <activity

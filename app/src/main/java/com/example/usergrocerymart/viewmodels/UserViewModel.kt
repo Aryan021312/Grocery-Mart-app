@@ -7,7 +7,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.usergrocerymart.mesg
 import com.example.usergrocerymart.models.Product
+import com.example.usergrocerymart.models.Users
 import com.example.usergrocerymart.roomdb.CartProducts
 import com.example.usergrocerymart.roomdb.CartProductsdb
 import com.example.usergrocerymart.roomdb.Dao
@@ -62,6 +64,9 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
         db.addValueEventListener(eventlistener)
         awaitClose{db.removeEventListener(eventlistener)}
     }
+    fun saveuserAddress(users: Users){
+        FirebaseDatabase.getInstance().getReference("All Users").child("Users").child(mesg.getcurrentuserid()).setValue(users)
+    }
     fun getcatprod(category : String):Flow<List<Product>> = callbackFlow  {
 
         val db =  FirebaseDatabase.getInstance().getReference("Admin").child("ProductCategory/${category}")
@@ -105,5 +110,14 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
         val totalitemcnt = MutableLiveData<Int>()
         totalitemcnt.value = sharedPreference.getInt("itemCount", 0)
         return totalitemcnt
+    }
+
+    fun saveAddressstatus(){
+        sharedPreference.edit().putBoolean("getAddress",true).apply()
+    }
+    fun getaddressstatus() : MutableLiveData <Boolean>{
+        val status = MutableLiveData<Boolean>()
+        status.value = sharedPreference.getBoolean("getAddress", false)
+        return status
     }
 }
